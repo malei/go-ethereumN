@@ -13,6 +13,9 @@ geth:
 run:
 	@./build/bin/geth
 
+push:
+	git push origin reading.v0.9.17
+
 mist:
 	build/env.sh go install -v $(shell build/ldflags.sh) ./cmd/mist
 	@echo "Done building."
