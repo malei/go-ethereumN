@@ -10,6 +10,9 @@ geth:
 	@echo "Done building."
 	@echo "Run \"$(GOBIN)/geth\" to launch geth."
 
+run:
+	@./build/bin/geth
+
 mist:
 	build/env.sh go install -v $(shell build/ldflags.sh) ./cmd/mist
 	@echo "Done building."
