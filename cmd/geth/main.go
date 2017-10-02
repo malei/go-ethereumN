@@ -67,6 +67,7 @@ func init() {
 		nodeNameVersion = Version + "-" + gitCommit[:8]
 	}
 
+	// utils/flags.go NewApp -> github.com/codegangsta/cli/app.g NewApp
 	app = utils.NewApp(Version, "the go-ethereum command line interface")
 	app.Action = run
 	app.HideVersion = true // we have a command to print the version
@@ -283,10 +284,11 @@ JavaScript API. See https://github.com/ethereum/go-ethereum/wiki/Javascipt-Conso
 }
 
 func main() {
-	//fmt.Printf("\n              🌞\n\n        ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴛʜᴇ\n       𝐅 𝐑 𝐎 𝐍 𝐓 𝐈 𝐄 𝐑\n\n🌾      🌵🌾🌾  🐎    🌾      🌵   🌾\n\n")
-	fmt.Println("\n   Welcome to the\n      FRONTIER\n")
+	fmt.Printf("\n              🌞\n\n        ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴛʜᴇ\n       𝐅 𝐑 𝐎 𝐍 𝐓 𝐈 𝐄 𝐑\n\n🌾      🌵🌾🌾  🐎    🌾      🌵   🌾\n\n")
+	fmt.Println("   Welcome to the FRONTIER")
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	defer logger.Flush()
+	fmt.Printf("[os.Args = %v]\n", os.Args)
 	if err := app.Run(os.Args); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -294,8 +296,11 @@ func main() {
 }
 
 func run(ctx *cli.Context) {
+	fmt.Printf("[run]\n")
 	utils.HandleInterrupt()
 	cfg := utils.MakeEthConfig(ClientIdentifier, nodeNameVersion, ctx)
+	fmt.Printf("cfg: %v\n", cfg)
+	os.Exit(0)
 	ethereum, err := eth.New(cfg)
 	if err != nil {
 		utils.Fatalf("%v", err)
