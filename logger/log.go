@@ -29,7 +29,6 @@ func New(datadir string, logFile string, logLevel int) LogSystem {
 	var sys LogSystem
 	sys = NewStdLogSystem(writer, log.LstdFlags, LogLevel(logLevel))
 	AddLogSystem(sys)
-
 	return sys
 }
 

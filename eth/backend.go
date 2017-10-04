@@ -27,6 +27,7 @@ import (
 	"github.com/ethereum/go-ethereum/p2p"
 	"github.com/ethereum/go-ethereum/p2p/discover"
 	"github.com/ethereum/go-ethereum/p2p/nat"
+	"github.com/ethereum/go-ethereum/reading/tools"
 	"github.com/ethereum/go-ethereum/whisper"
 )
 
@@ -199,12 +200,18 @@ type Ethereum struct {
 }
 
 func New(config *Config) (*Ethereum, error) {
+	fmt.Printf("[eth.New]\n")
+	tools.Print(config)
+
 	// Bootstrap database
-	logger.New(config.DataDir, config.LogFile, config.LogLevel)
+	sys := logger.New(config.DataDir, config.LogFile, config.LogLevel)
+	fmt.Printf("[sys: = %v]\n", sys)
+
 	if len(config.LogJSON) > 0 {
 		logger.NewJSONsystem(config.DataDir, config.LogJSON)
 	}
 
+	// it mount different db system.
 	newdb := config.NewDB
 	if newdb == nil {
 		newdb = func(path string) (common.Database, error) { return ethdb.NewLDBDatabase(path) }
@@ -298,7 +305,6 @@ func New(config *Config) (*Ethereum, error) {
 	}
 
 	vm.Debug = config.VmDebug
-
 	return eth, nil
 }
 
@@ -435,6 +441,7 @@ func (s *Ethereum) Start() error {
 	go s.txPool.Start()
 	s.protocolManager.Start()
 
+	glog.V(logger.Info).Infoln("s.whisper:", s.whisper)
 	if s.whisper != nil {
 		s.whisper.Start()
 	}

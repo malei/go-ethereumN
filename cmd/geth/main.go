@@ -43,6 +43,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/eth"
 	"github.com/ethereum/go-ethereum/logger"
+	//"github.com/ethereum/go-ethereum/reading/tools"
 	"github.com/mattn/go-colorable"
 	"github.com/mattn/go-isatty"
 	"github.com/peterh/liner"
@@ -204,7 +205,6 @@ Use "ethereum dump 0" to dump the genesis block.
 			Usage:  `Geth Console: interactive JavaScript environment`,
 			Description: `
 The Geth console is an interactive shell for the JavaScript runtime environment
-which exposes a node admin interface as well as the Ðapp JavaScript API.
 See https://github.com/ethereum/go-ethereum/wiki/Javascipt-Console
 `,
 		},
@@ -213,7 +213,6 @@ See https://github.com/ethereum/go-ethereum/wiki/Javascipt-Console
 			Name:   "js",
 			Usage:  `executes the given JavaScript files in the Geth JavaScript VM`,
 			Description: `
-The JavaScript VM exposes a node admin interface as well as the Ðapp
 JavaScript API. See https://github.com/ethereum/go-ethereum/wiki/Javascipt-Console
 `,
 		},
@@ -284,7 +283,6 @@ JavaScript API. See https://github.com/ethereum/go-ethereum/wiki/Javascipt-Conso
 }
 
 func main() {
-	fmt.Printf("\n              🌞\n\n        ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴛʜᴇ\n       𝐅 𝐑 𝐎 𝐍 𝐓 𝐈 𝐄 𝐑\n\n🌾      🌵🌾🌾  🐎    🌾      🌵   🌾\n\n")
 	fmt.Println("   Welcome to the FRONTIER")
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	defer logger.Flush()
@@ -299,14 +297,15 @@ func run(ctx *cli.Context) {
 	fmt.Printf("[run]\n")
 	utils.HandleInterrupt()
 	cfg := utils.MakeEthConfig(ClientIdentifier, nodeNameVersion, ctx)
-	fmt.Printf("cfg: %v\n", cfg)
-	os.Exit(0)
+	//tools.Print()
 	ethereum, err := eth.New(cfg)
 	if err != nil {
 		utils.Fatalf("%v", err)
 	}
+	//tools.Print(ethereum)
 
 	startEth(ctx, ethereum)
+
 	// this blocks the thread
 	ethereum.WaitForShutdown()
 }
@@ -388,6 +387,8 @@ func startEth(ctx *cli.Context, eth *eth.Ethereum) {
 	am := eth.AccountManager()
 
 	account := ctx.GlobalString(utils.UnlockedAccountFlag.Name)
+
+	//fmt.Printf("account: %s len(account) = %d\n", account, len(account))
 	if len(account) > 0 {
 		if account == "primary" {
 			accbytes, err := am.Primary()
@@ -398,6 +399,10 @@ func startEth(ctx *cli.Context, eth *eth.Ethereum) {
 		}
 		unlockAccount(ctx, am, account)
 	}
+	//fmt.Printf("ctx.GlobalBool(utils.RPCEnabledFlag.Name) = %t\n",
+	//	ctx.GlobalBool(utils.RPCEnabledFlag.Name))
+	//fmt.Printf("ctx.GlobalBool(utils.MiningEnabledFlag.Name) = %t\n",
+	//	ctx.GlobalBool(utils.MiningEnabledFlag.Name))
 	// Start auxiliary services if enabled.
 	if ctx.GlobalBool(utils.RPCEnabledFlag.Name) {
 		if err := utils.StartRPC(eth, ctx); err != nil {

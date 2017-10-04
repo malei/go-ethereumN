@@ -281,6 +281,14 @@ func MakeEthConfig(clientID, version string, ctx *cli.Context) *eth.Config {
 	if len(customName) > 0 {
 		clientID += "/" + customName
 	}
+	/*
+		customName:
+		clientID:  Geth
+		LogFileFlag.Name:  logfile
+		LogLevelFlag.Name:  loglevel
+		ctx.GlobalString(LogFileFlag.Name):
+		print("Config.Name: ", common.MakeName(clientID, version))
+		* */
 
 	return &eth.Config{
 		Name:               common.MakeName(clientID, version),
